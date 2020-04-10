@@ -51,15 +51,13 @@ public:
 		Maximize();
 		GetSize(&w, &h);
 		h *= 2;
-		SetTextColor(BKG, BKG);
+		Clear(BKG, BKG);
 		HideCursor();
-		Clear();
 	}
 
 	~Game()
 	{
-		SetTextColor(Console::LightGrey);
-		ShowCursor();
+		Clear(Console::Default);
 	}
 
 	void show();
