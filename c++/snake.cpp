@@ -40,20 +40,16 @@ const int Height = 30;
 
 class Game : public Console
 {
-	int w, h;
-
 	void update();
 
 public:
 
-	const int &width, &height;
+	const int width, height;
 
-	Game() : Console("SNAKE!", 100), width(w), height(h)
+	Game() : Console("SNAKE!", 100), width(Width), height(Height)
 	{
 		SetFontSize(32);
-		Center(Width, Height / 2);
-		GetSize(&w, &h);
-		h *= 2;
+		Center(width, height / 2);
 		Clear(BKG, BKG);
 		HideCursor();
 	}
