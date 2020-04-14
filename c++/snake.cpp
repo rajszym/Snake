@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    10.04.2020
+   @date    14.04.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -33,6 +33,9 @@
 
 #define BKG Console::Green
 
+const int Width  = 40;
+const int Height = 30;
+
 //----------------------------------------------------------------------------
 
 class Game : public Console
@@ -48,7 +51,7 @@ public:
 	Game() : Console("SNAKE!", 100), width(w), height(h)
 	{
 		SetFontSize(32);
-		Maximize();
+		Center(Width, Height / 2);
 		GetSize(&w, &h);
 		h *= 2;
 		Clear(BKG, BKG);
@@ -130,16 +133,18 @@ Fruit fruit;
 
 //----------------------------------------------------------------------------
 
+enum Dir
+{
+	Up = 0,
+	Right,
+	Down,
+	Left,
+};
+
+//----------------------------------------------------------------------------
+
 struct Snake : Point
 {
-	enum Dir
-	{
-		Up = 0,
-		Right,
-		Down,
-		Left,
-	};
-
 	Body  body;
 	Dir   direction;
 	int   length;
@@ -234,26 +239,18 @@ void Game::update()
 
 void Game::show()
 {
-	static int prev = 0;
 	INPUT_RECORD input;
 
 	while (snake.alive) {
-		while (con.GetInput(&input)) {
-			update();
-			if (input.EventType == KEY_EVENT) {
-				if (prev == input.Event.KeyEvent.wVirtualKeyCode) {
-					prev = 0;
-					continue;
-				}
-				switch (input.Event.KeyEvent.wVirtualKeyCode) {
-					case VK_LEFT:   snake.turnLeft();  break;
-					case VK_RIGHT:  snake.turnRight(); break;
-					case VK_ESCAPE: return;
-				}
-				prev = input.Event.KeyEvent.wVirtualKeyCode;
+		update();
+		if (con.GetInput(&input) && input.EventType == KEY_EVENT && input.Event.KeyEvent.bKeyDown == TRUE) {
+			int key = input.Event.KeyEvent.wVirtualKeyCode;
+			switch (key) {
+				case VK_LEFT:   snake.turnLeft();  break;
+				case VK_RIGHT:  snake.turnRight(); break;
+				case VK_ESCAPE: return;
 			}
 		}
-		update();
 	}
 
 	const char *text = " GAME OVER ";
