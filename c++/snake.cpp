@@ -48,7 +48,7 @@ public:
 
 	Game() : Console("SNAKE!", 100), width(Width), height(Height)
 	{
-		SetFontSize(32);
+		SetFont(32, L"Consolas");
 		Center(width, height / 2);
 		Clear(BKG, BKG);
 		HideCursor();
