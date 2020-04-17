@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    14.04.2020
+   @date    17.04.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -46,7 +46,7 @@ public:
 
 	const int width, height;
 
-	Game() : Console("SNAKE!", 100), width(Width), height(Height)
+	Game() : Console("SNAKE", 100), width(Width), height(Height)
 	{
 		SetFont(32, L"Consolas");
 		Center(width, height / 2);
