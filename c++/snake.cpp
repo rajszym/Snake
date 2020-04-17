@@ -79,7 +79,8 @@ struct Point : POINT
 	void put( Console::Color color )
 	{
 		Console::Color fore, back;
-		con.Get(x, y / 2, &fore, &back);
+		if (!con.Get(x, y / 2, &fore, &back))
+			return;
 		if (y % 2 == 0) {
 			fore = color;
 		}
