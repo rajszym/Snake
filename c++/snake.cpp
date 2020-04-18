@@ -266,7 +266,7 @@ int main()
 	return 0;
 }
 
-int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	con.show();
 	return 0;
