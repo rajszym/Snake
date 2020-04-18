@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    17.04.2020
+   @date    18.04.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -213,7 +213,7 @@ Snake snake;
 
 void Game::update()
 {
-	if (con.wait()) return;
+	if (con.Wait()) return;
 
 	snake.move();
 	fruit.move();
