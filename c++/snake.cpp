@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    18.04.2020
+   @date    15.10.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -30,6 +30,9 @@
 ******************************************************************************/
 
 #include "console.hpp"
+#include <list>
+#include <random>
+#include <cstring>
 
 #define BKG Console::Green
 
@@ -103,13 +106,14 @@ struct Fruit : Point
 
 	Fruit() : Point(0, 0)
 	{
-		srand(time(0));
 		create();
 	}
 
 	void create()
 	{
-		moveTo(rand() % con.width, rand() % con.height);
+		auto rnd = std::mt19937{std::random_device{}()};
+
+		moveTo(rnd() % con.width, rnd() % con.height);
 		value =  9;
 		delay = 20;
 	}
@@ -213,7 +217,7 @@ Snake snake;
 
 void Game::update()
 {
-	if (con.Wait()) return;
+	if (con.Waiting()) return;
 
 	snake.move();
 	fruit.move();
