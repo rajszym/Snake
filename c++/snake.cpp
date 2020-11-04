@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    15.10.2020
+   @date    04.11.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -29,10 +29,11 @@
 
 ******************************************************************************/
 
-#include "console.hpp"
 #include <list>
 #include <random>
 #include <cstring>
+#include "console.hpp"
+#include "gametimer.hpp"
 
 #define BKG Console::Green
 
@@ -41,7 +42,7 @@ const int Height = 30;
 
 //----------------------------------------------------------------------------
 
-class Game : public Console
+class Game : public Console, public GameTimer
 {
 	void update();
 
@@ -49,7 +50,7 @@ public:
 
 	const int width, height;
 
-	Game() : Console("SNAKE", 100), width(Width), height(Height)
+	Game() : Console("SNAKE"), GameTimer(std::chrono::milliseconds(100)), width(Width), height(Height)
 	{
 		SetFont(32, L"Consolas");
 		Center(width, height / 2);
@@ -99,10 +100,9 @@ typedef std::list<Point> Body;
 
 //----------------------------------------------------------------------------
 
-struct Fruit : Point
+struct Fruit : Point, GameTimer
 {
-	int value;
-	int delay;
+	using Delay = std::chrono::duration<float, std::ratio<3, 2>>;
 
 	Fruit() : Point(0, 0)
 	{
@@ -114,18 +114,18 @@ struct Fruit : Point
 		auto rnd = std::mt19937{std::random_device{}()};
 
 		moveTo(rnd() % con.width, rnd() % con.height);
-		value =  9;
-		delay = 20;
+
+		GameTimer::start<Delay>(9);
 	}
 
-	void move()
+	int value()
 	{
-		if (--delay <= 0) { delay = 20; if (value > 0) value--; }
+		return std::ceil(GameTimer::until<Delay>());
 	}
 
 	void update()
 	{
-		put((delay <= 10) ? Console::Yellow : Console::Red);
+		put(value() < 5 ? Console::Red : Console::Yellow);
 	}
 };
 
@@ -217,18 +217,17 @@ Snake snake;
 
 void Game::update()
 {
-	if (con.Waiting()) return;
+	if (GameTimer::waiting()) return;
 
 	snake.move();
-	fruit.move();
 
 	if (snake.gulp(fruit)) {
-		snake.rise(fruit.value);
+		snake.rise(fruit.value());
 		fruit.create();
 	}
 
 	char text[8] = { 0 };
-	wsprintf(text, "%d", fruit.value);
+	wsprintf(text, "%d", fruit.value());
 	con.Put(1, 0, text, Console::White, BKG);
 	wsprintf(text, "%4d", snake.size());
 	con.Put(con.width - 5, 0, text, Console::White, BKG);

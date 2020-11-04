@@ -2,7 +2,7 @@
 
    @file    console.hpp
    @author  Rajmund Szymanski
-   @date    15.10.2020
+   @date    03.11.2020
    @brief   console class
 
 *******************************************************************************
@@ -31,38 +31,14 @@
 
 #pragma once
 
-#include <chrono>
-#include <algorithm>
+#define WIN32_LEAN_AND_MEAN
+
 #include <windows.h>
+#include <algorithm>
 
-class ConsoleTimer
-{
-	std::chrono::milliseconds tick_;
-	std::chrono::time_point<std::chrono::high_resolution_clock> time_;
-
-public:
-
-	ConsoleTimer( const int duration = 0 )
-	{
-		tick_ = std::chrono::milliseconds(duration);
-		time_ = std::chrono::high_resolution_clock::now();
-	}
-
-	bool Waiting()
-	{
-		if (std::chrono::high_resolution_clock::now() - time_ < tick_)
-			return true;
-
-		time_ += tick_;
-		return false;
-	}
-};
-
-class Console: public ConsoleTimer
+class Console
 {
 public:
-
-	using Timer = ConsoleTimer;
 
 	enum: char
 	{
@@ -105,24 +81,29 @@ public:
 			x(_x), y(_y), width(_w), height(_h),
 			left(_x), top(_y), right(_x + _w - 1), bottom(_y + _h - 1) {}
 
-		int Center( const int w ) const
+		bool contains( const int _x, const int _y ) const
 		{
-			return x + (width - w) / 2;
+			return _x >= left && _x <= right && _y >= top && _y <= bottom;
 		}
 
-		int Right( const int w ) const
+		int Center( const int _w ) const
 		{
-			return x + width - w;
+			return x + (width - _w) / 2;
 		}
 
-		int Middle( const int h ) const
+		int Right( const int _w ) const
 		{
-			return y + (height - h) / 2;
+			return x + width - _w;
 		}
 
-		int Bottom( const int h ) const
+		int Middle( const int _h ) const
 		{
-			return y + height - h;
+			return y + (height - _h) / 2;
+		}
+
+		int Bottom( const int _h ) const
+		{
+			return y + height - _h;
 		}
 	};
 
@@ -302,7 +283,7 @@ public:
 	const HANDLE &Cout;
 	const HANDLE &Cerr;
 
-	Console( LPCTSTR title = NULL, const int duration = 0 ): ConsoleTimer(duration), Hwnd(hwnd_), Cin(cin_), Cout(cout_), Cerr(cerr_)
+	Console( LPCTSTR title = NULL ): Hwnd(hwnd_), Cin(cin_), Cout(cout_), Cerr(cerr_)
 	{
 		if (!Open(title)) {
 			cerr_ = cout_ = cin_ = NULL;
