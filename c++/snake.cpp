@@ -50,7 +50,7 @@ public:
 
 	const int width, height;
 
-	Game() : Console("SNAKE"), GameTimer(std::chrono::milliseconds(100)), width(Width), height(Height)
+	Game() : Console("SNAKE"), width(Width), height(Height)
 	{
 		SetFont(32, L"Consolas");
 		Center(width, height / 2);
@@ -115,12 +115,12 @@ struct Fruit : Point, GameTimer
 
 		moveTo(rnd() % con.width, rnd() % con.height);
 
-		GameTimer::start<Delay>(9);
+		GameTimer::restart();
 	}
 
 	int value()
 	{
-		return std::ceil(GameTimer::until<Delay>());
+		return std::ceil(GameTimer::until(Delay(9)));
 	}
 
 	void update()
@@ -217,7 +217,7 @@ Snake snake;
 
 void Game::update()
 {
-	if (GameTimer::waiting()) return;
+	if (GameTimer::waiting(100)) return;
 
 	snake.move();
 
