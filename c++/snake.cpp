@@ -42,7 +42,7 @@ const int Height = 30;
 
 //----------------------------------------------------------------------------
 
-class Game : public Console, public GameTimer
+class Game : public Console, public GameTimer<int, std::milli>
 {
 	void update();
 
@@ -50,7 +50,7 @@ public:
 
 	const int width, height;
 
-	Game() : Console("SNAKE"), width(Width), height(Height)
+	Game() : Console("SNAKE"), GameTimer(100), width(Width), height(Height)
 	{
 		SetFont(32, L"Consolas");
 		Center(width, height / 2);
@@ -100,11 +100,9 @@ typedef std::list<Point> Body;
 
 //----------------------------------------------------------------------------
 
-struct Fruit : Point, GameTimer
+struct Fruit : Point, GameTimer<float, std::ratio<3, 2>>
 {
-	using Delay = std::chrono::duration<float, std::ratio<3, 2>>;
-
-	Fruit() : Point(0, 0)
+	Fruit() : Point(0, 0), GameTimer(9)
 	{
 		create();
 	}
@@ -120,7 +118,7 @@ struct Fruit : Point, GameTimer
 
 	int value()
 	{
-		return std::ceil(GameTimer::until(Delay(9)));
+		return std::ceil(GameTimer::until());
 	}
 
 	void update()
@@ -217,7 +215,7 @@ Snake snake;
 
 void Game::update()
 {
-	if (GameTimer::waiting(100)) return;
+	if (GameTimer::waiting()) return;
 
 	snake.move();
 
