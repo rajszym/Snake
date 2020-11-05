@@ -102,7 +102,7 @@ typedef std::list<Point> Body;
 
 struct Fruit : Point, GameTimer<float, std::ratio<3, 2>>
 {
-	Fruit() : Point(0, 0), GameTimer(9)
+	Fruit() : Point(0, 0)
 	{
 		create();
 	}
@@ -118,7 +118,7 @@ struct Fruit : Point, GameTimer<float, std::ratio<3, 2>>
 
 	int value()
 	{
-		return std::ceil(GameTimer::until());
+		return std::ceil(GameTimer::until(9));
 	}
 
 	void update()
