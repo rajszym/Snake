@@ -50,7 +50,7 @@ public:
 
 	const int width, height;
 
-	Game() : Console("SNAKE"), GameTimer(100), width(Width), height(Height)
+	Game() : Console("SNAKE"), width(Width), height(Height)
 	{
 		SetFont(32, L"Consolas");
 		Center(width, height / 2);
@@ -215,7 +215,7 @@ Snake snake;
 
 void Game::update()
 {
-	if (GameTimer::waiting()) return;
+	if (GameTimer::waiting(100)) return;
 
 	snake.move();
 
