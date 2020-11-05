@@ -118,7 +118,7 @@ struct Fruit : Point, GameTimer<float, std::ratio<3, 2>>
 
 	int value()
 	{
-		return std::ceil(GameTimer::until(9));
+		return std::ceil(GameTimer::until(9.0f));
 	}
 
 	void update()
