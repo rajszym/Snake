@@ -2,7 +2,7 @@
 
    @file    console.hpp
    @author  Rajmund Szymanski
-   @date    09.11.2020
+   @date    15.11.2020
    @brief   console class
 
 *******************************************************************************
@@ -73,8 +73,8 @@ public:
 		Red         = 0x4,
 		Purple      = 0x5,
 		Orange      = 0x6,
-		LightGrey   = 0x7,
-		Grey        = 0x8,
+		LightGray   = 0x7,
+		Gray        = 0x8,
 		LightBlue   = 0x9,
 		LightGreen  = 0xA,
 		LightCyan   = 0xB,
@@ -82,7 +82,7 @@ public:
 		LightPurple = 0xD,
 		Yellow      = 0xE,
 		White       = 0xF,
-		Default     = LightGrey,
+		Default     = LightGray,
 	};
 
 	struct Rect
@@ -93,11 +93,6 @@ public:
 			x(_x), y(_y), width(_w), height(_h),
 			left(_x), top(_y), right(_x + _w), bottom(_y + _h),
 			center((left + right) / 2), middle((top + bottom) / 2) {}
-
-		bool contains( const int _x, const int _y ) const
-		{
-			return _x >= left && _x < right && _y >= top && _y < bottom;
-		}
 
 		int Center( const int _w ) const
 		{
@@ -117,6 +112,49 @@ public:
 		int Bottom( const int _h ) const
 		{
 			return bottom - _h;
+		}
+
+		void inflate( const int _d )
+		{
+			x -= _d; y -= _d; width += _d * 2, height += _d * 2;
+		}
+
+		void inflate( const int _dx, const int _dy )
+		{
+			x -= _dx; y -= _dy; width += _dx * 2; height += _dy * 2;
+		}
+
+		void inflate( const int _dx, const int _dy, const int _dw, const int _dh )
+		{
+			x -= _dx; y -= _dy; width += _dx + _dw; height += _dy + _dh;
+		}
+
+		static
+		Rect inflate( const Rect &r, const int _d )
+		{
+			return { r.x - _d, r.y - _d, r.width + _d * 2, r.height + _d * 2 };
+		}
+
+		static
+		Rect inflate( const Rect &r, const int _dx, const int _dy )
+		{
+			return { r.x - _dx, r.y - _dy, r.width + _dx * 2, r.height + _dy * 2 };
+		}
+
+		static
+		Rect inflate( const Rect &r, const int _dx, const int _dy, const int _dw, const int _dh )
+		{
+			return { r.x - _dx, r.y - _dy, r.width + _dx + _dw, r.height + _dy + _dh };
+		}
+
+		bool contains( const int _x, const int _y ) const
+		{
+			return _x >= left && _x < right && _y >= top && _y < bottom;
+		}
+
+		bool contains( const POINT _p ) const
+		{
+			return contains(_p.x, _p.y);
 		}
 	};
 
@@ -754,9 +792,9 @@ public:
 	bool DrawSingle( const Rect &rc ) const
 	{
 #if defined(UNICODE)
-		const TCHAR box[] = _T(   " "   "╶"   "╷"   "┌"   "╴"   "─"   "┐"   "┬"   "╵"   "└"   "│"   "├"   "┘"   "┴"   "┤"   "┼");
+		constexpr TCHAR box[] = _T(   " "   "╶"   "╷"   "┌"   "╴"   "─"   "┐"   "┬"   "╵"   "└"   "│"   "├"   "┘"   "┴"   "┤"   "┼");
 #else
-		const TCHAR box[] = _T("\x20""\x20""\x20""\xDA""\x20""\xC4""\xBF""\xC2""\x20""\xC0""\xB3""\xC3""\xD9""\xC1""\xB4""\xC5");
+		constexpr TCHAR box[] = _T("\x20""\x20""\x20""\xDA""\x20""\xC4""\xBF""\xC2""\x20""\xC0""\xB3""\xC3""\xD9""\xC1""\xB4""\xC5");
 #endif
 		return DrawFrame(rc, box);
 	}
@@ -770,9 +808,9 @@ public:
 	bool DrawDouble( const Rect &rc ) const
 	{
 #if defined(UNICODE)
-		const TCHAR box[] = _T(   " "   " "   " "   "╔"   " "   "═"   "╗"   "╦"   " "   "╚"   "║"   "╠"   "╝"   "╩"   "╣"   "╬");
+		constexpr TCHAR box[] = _T(   " "   " "   " "   "╔"   " "   "═"   "╗"   "╦"   " "   "╚"   "║"   "╠"   "╝"   "╩"   "╣"   "╬");
 #else
-		const TCHAR box[] = _T("\x20""\x20""\x20""\xC9""\x20""\xCD""\xBB""\xCB""\x20""\xC8""\xBA""\xCC""\xBC""\xCA""\xB9""\xCE");
+		constexpr TCHAR box[] = _T("\x20""\x20""\x20""\xC9""\x20""\xCD""\xBB""\xCB""\x20""\xC8""\xBA""\xCC""\xBC""\xCA""\xB9""\xCE");
 #endif
 		return DrawFrame(rc, box);
 	}
@@ -786,11 +824,11 @@ public:
 	bool DrawBold( const Rect &rc ) const
 	{
 #if defined(UNICODE)
-		const TCHAR box[] = _T(   " "   "╺"   "╻"   "┏"   "╸"   "━"   "┓"   "┳"   "╹"   "┗"   "┃"   "┣"   "┛"   "┻"   "┫"   "╋");
+		constexpr TCHAR box[] = _T(   " "   "╺"   "╻"   "┏"   "╸"   "━"   "┓"   "┳"   "╹"   "┗"   "┃"   "┣"   "┛"   "┻"   "┫"   "╋");
 
 		return DrawFrame(rc, box);
 #else
-		const TCHAR box[] = { LowerHalfBlock, FullBlock, UpperHalfBlock, BlackSquare };
+		constexpr TCHAR box[] = { LowerHalfBlock, FullBlock, UpperHalfBlock, BlackSquare };
 
 		if (rc.width <= 0 || rc.height <= 0)
 			return false;

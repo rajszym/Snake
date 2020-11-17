@@ -2,7 +2,7 @@
 
    @file    snake.cpp
    @author  Rajmund Szymanski
-   @date    04.11.2020
+   @date    10.11.2020
    @brief   Sudoku game and generator
 
 *******************************************************************************
@@ -195,7 +195,7 @@ struct Snake : Point
 	{
 		put(Console::Blue);
 		for (auto &i: body)
-			i.put(Console::Grey);
+			i.put(Console::Gray);
 	}
 
 	bool gulp( Point &p )
